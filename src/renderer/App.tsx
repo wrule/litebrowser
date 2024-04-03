@@ -1,11 +1,12 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.scss';
+import zhCN from 'antd/locale/zh_CN';
 import { ConfigProvider } from 'antd';
+import './App.scss';
 import Home from './views/Home';
 
 export default function App() {
   return (
-    <ConfigProvider theme={{
+    <ConfigProvider locale={zhCN} theme={{
       token: {
         colorPrimary: '#346fff',
         borderRadius: 0,

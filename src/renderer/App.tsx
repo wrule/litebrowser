@@ -2,8 +2,11 @@ import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import zhCN from 'antd/locale/zh_CN';
 import { ConfigProvider, Layout, Menu } from 'antd';
 import './App.scss';
-import Home from './views/Home';
 import { ChromeFilled, CodeSandboxSquareFilled, SettingFilled } from '@ant-design/icons';
+import Core from './views/Core';
+import Test from './views/Test';
+import Config from './views/Config';
+import Browser from './views/Browser';
 
 const { Sider, Header, Content } = Layout;
 
@@ -26,7 +29,10 @@ export default function App() {
         <Content>
           <Router>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<Browser />} />
+              <Route path="/core" element={<Core />} />
+              <Route path="/config" element={<Config />} />
+              <Route path="/test" element={<Test />} />
             </Routes>
           </Router>
         </Content>

@@ -17,6 +17,7 @@ import { openBrowser, resolveHtmlPath } from './util';
 import Koa from 'koa';
 import Router from 'koa-router';
 import { bodyParser } from '@koa/bodyparser';
+import cors from '@koa/cors';
 
 class AppUpdater {
   constructor() {
@@ -129,6 +130,7 @@ app.on('window-all-closed', () => {
 
 const createServer = () => {
   const app = new Koa();
+  app.use(cors());
   app.use(bodyParser());
   const router = new Router();
   router.post('/openBrowser', (ctx, next) => {

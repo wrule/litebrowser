@@ -14,10 +14,16 @@ const { Sider, Header, Content } = Layout;
 export default function App() {
   const navigator = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState<string[]>(['browser']);
+  const [collapsed, setCollapsed] = useState<boolean>(!!localStorage.getItem('collapsed'));
 
   const handleChangeMenu = (key: string) => {
     setSelectedMenu([key]);
     navigator(`/${key}`);
+  };
+
+  const handleCollapsedChange = (value: boolean) => {
+    localStorage.setItem('collapsed', value ? '1' : '');
+    setCollapsed(value);
   };
 
   return (
@@ -28,9 +34,12 @@ export default function App() {
       },
     }}>
       <Layout style={{ minHeight: '100vh' }}>
-        <Sider collapsible>
-          <div className="logo_text">
-            <h2>LiteBrowser</h2>
+        <Sider
+          collapsible={true}
+          collapsed={collapsed}
+          onCollapse={(value) => handleCollapsedChange(value)}>
+          <div className={`logo_text ${collapsed ? 'collapsed' : ''}`}>
+            {collapsed ? <h2>LTBR</h2> : <h2>LiteBrowser</h2>}
           </div>
           <Menu
             theme="dark"

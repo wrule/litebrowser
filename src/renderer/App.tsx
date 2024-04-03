@@ -29,6 +29,9 @@ export default function App() {
     }}>
       <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible>
+          <div className="logo_text">
+            <h2>LiteBrowser</h2>
+          </div>
           <Menu
             theme="dark"
             selectedKeys={selectedMenu}

@@ -13,7 +13,10 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
+import { openBrowser, resolveHtmlPath } from './util';
+import Koa from 'koa';
+import Router from 'koa-router';
+import { bodyParser } from '@koa/bodyparser';
 
 class AppUpdater {
   constructor() {
@@ -124,9 +127,26 @@ app.on('window-all-closed', () => {
   }
 });
 
+const createServer = () => {
+  const app = new Koa();
+  app.use(bodyParser());
+  const router = new Router();
+  router.post('/openBrowser', (ctx, next) => {
+    const userDataDir: string = ctx.request.body.userDataDir;
+    const browserPath: string = ctx.request.body.browserPath;
+    openBrowser(userDataDir, browserPath);
+    ctx.body = { success: true, message: 'ok' };
+  });
+  app
+    .use(router.routes())
+    .use(router.allowedMethods());
+  app.listen(51276);
+};
+
 app
   .whenReady()
   .then(() => {
+    createServer();
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the

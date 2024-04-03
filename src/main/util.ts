@@ -16,7 +16,7 @@ export function resolveHtmlPath(htmlFileName: string) {
 const chromePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
 export function
-openBrowser(userDataDir: string) {
+openBrowser(userDataDir: string, browserPath?: string) {
   const command = `"${chromePath}" ${`
     --flag-switches-begin --flag-switches-end
   `.trim()} ${`

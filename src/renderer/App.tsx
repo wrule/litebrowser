@@ -1,8 +1,8 @@
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import zhCN from 'antd/locale/zh_CN';
 import { ConfigProvider, Layout, Menu } from 'antd';
 import './App.scss';
-import { ChromeFilled, CodeSandboxSquareFilled, SettingFilled } from '@ant-design/icons';
+import { ChromeFilled, CodeSandboxSquareFilled, DashboardFilled, SettingFilled } from '@ant-design/icons';
 import Core from './views/Core';
 import Test from './views/Test';
 import Config from './views/Config';
@@ -15,9 +15,9 @@ export default function App() {
   const navigator = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState<string[]>(['browser']);
   const [collapsed, setCollapsed] = useState<boolean>(!!localStorage.getItem('collapsed'));
+  const loc = useLocation();
 
-  const handleChangeMenu = (key: string) => {
-    setSelectedMenu([key]);
+  const handleMenuChange = (key: string) => {
     navigator(`/${key}`);
   };
 
@@ -43,15 +43,17 @@ export default function App() {
           </div>
           <Menu
             theme="dark"
-            selectedKeys={selectedMenu}
-            onSelect={(info) => handleChangeMenu(info.key)}>
+            selectedKeys={[loc.pathname.slice(1)]}
+            onSelect={(info) => handleMenuChange(info.key)}>
             <Menu.Item key="browser" icon={<ChromeFilled />}>浏览器</Menu.Item>
             <Menu.Item key="core" icon={<CodeSandboxSquareFilled />}>内核管理</Menu.Item>
             <Menu.Item key="config" icon={<SettingFilled />}>系统设置</Menu.Item>
+            <Menu.Item key="test" icon={<DashboardFilled />}>测试页面</Menu.Item>
           </Menu>
         </Sider>
         <Content>
           <Routes>
+            <Route path="/" element={<Navigate to="browser" replace />} />
             <Route path="/browser" element={<Browser />} />
             <Route path="/core" element={<Core />} />
             <Route path="/config" element={<Config />} />

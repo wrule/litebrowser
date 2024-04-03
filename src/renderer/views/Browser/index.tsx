@@ -1,5 +1,6 @@
-import { Button, Col, Form, Input, Layout, Row, Space, Table, Tag } from 'antd';
+import { Button, Col, Form, Input, Layout, Row, Select, Space, Table, Tag } from 'antd';
 import { post } from '../../http';
+import LabelEditor from '../../components/LabelEditor';
 
 const { Header, Content } = Layout;
 
@@ -30,6 +31,9 @@ export default function Browser() {
         <Space>
           <Button type="primary">新增</Button>
         </Space>
+    </Row>
+    <Row className="row">
+      <LabelEditor />
     </Row>
     <Row className="row">
       <Col span={24}>

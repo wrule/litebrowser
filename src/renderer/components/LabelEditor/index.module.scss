@@ -1,0 +1,20 @@
+.com {
+  &:not(:hover) {
+    :global {
+      .ant-select-selector {
+        border-color: rgba(0, 0, 0, 0);
+        background-color: rgba(0, 0, 0, 0);
+      }
+      .ant-select-arrow {
+        visibility: hidden;
+      }
+    }
+  }
+  :global {
+    .ant-tag:not(:hover) {
+      .ant-tag-close-icon {
+        display: none;
+      }
+    }
+  }
+}

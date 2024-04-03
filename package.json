@@ -22,7 +22,7 @@
   "license": "MIT",
   "author": {
     "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
+    "email": "gushihao1993@gmail.com",
     "url": "https://electron-react-boilerplate.js.org"
   },
   "contributors": [
@@ -174,8 +174,8 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "litebrowser",
+    "appId": "org.erb.litebrowser",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [

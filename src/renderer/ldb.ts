@@ -7,9 +7,7 @@ interface LDBItem {
 
 export default
 class LDB<T extends LDBItem> {
-  public constructor(
-    private readonly name: string,
-  ) { }
+  public constructor(private readonly name: string) { }
 
   public getKey() {
     let index = 1;
@@ -22,6 +20,7 @@ class LDB<T extends LDBItem> {
   public addItem(item: T) {
     const key = this.getKey();
     localStorage.setItem(key, JSON.stringify({ ...item, __key: key }));
+    item.__key = key;
   }
 
   public removeItem(item: T) {
@@ -34,7 +33,7 @@ class LDB<T extends LDBItem> {
 
   public queryItem(filter = (item: T) => true): T[] {
     const keys = Object.keys(localStorage)
-      .filter((key) => key.startsWith(`ldb-${name}-`));
+      .filter((key) => key.startsWith(`ldb-${this.name}-`));
     return keys.map((key) => JSON.parse(localStorage.getItem(key) as string))
       .filter(filter);
   }

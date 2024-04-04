@@ -5,6 +5,13 @@ import { useState } from 'react';
 
 const { Header, Content } = Layout;
 
+export
+interface Item {
+  __key: string;
+  name: string;
+  [name: string]: any;
+}
+
 export default function Browser() {
   const [form] = Form.useForm();
   const [modal, setModal] = useState<any>(null);
@@ -20,19 +27,18 @@ export default function Browser() {
     localStorage.setItem(key, JSON.stringify({ ...item, key }));
   };
 
-  const removeItem = (name: string, item: any) => {
-    const key = item.key;
-    localStorage.removeItem(key);
+  const removeItem = (item: Item) => {
+    localStorage.removeItem(item.__key);
   };
 
-  const updateItem = (name: string, item: any) => {
-    const key = item.key;
-    localStorage.setItem(key, JSON.stringify({ ...item }));
+  const updateItem = (item: Item) => {
+    localStorage.setItem(item.__key, JSON.stringify(item));
   };
 
-  const queryItem = (name: string) => {
+  const queryItem = (name: string, filter = (item: Item) => true) => {
     const keys = Object.keys(localStorage).filter((key) => key.startsWith(`${name}-`));
-    return keys.map((key) => JSON.parse(localStorage.getItem(key)));
+    return keys.map((key) => JSON.parse(localStorage.getItem(key) as string))
+      .filter((item) => filter(item));
   };
 
   return <div>

@@ -1,12 +1,6 @@
 
-export
-interface LDBItem {
-  __key: string;
-  [name: string]: any;
-}
-
 export default
-class LDB<T extends LDBItem> {
+class LDB<T> {
   public constructor(private readonly name: string) { }
 
   public getKey() {

@@ -1,45 +1,43 @@
-import { Button, Col, Form, Input, Layout, Modal, Row, Select, Space, Table, Tag } from 'antd';
+import { Button, Col, Dropdown, Form, Input, Layout, Menu, Modal, Row, Select, Space, Table, Tag } from 'antd';
 import { post } from '../../http';
 import LabelEditor from '../../components/LabelEditor';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import LDB from '../../ldb';
+import { MoreOutlined } from '@ant-design/icons';
 
 const { Header, Content } = Layout;
 
-export
-interface Item {
-  __key: string;
-  name: string;
-  [name: string]: any;
-}
+const db = new LDB('browser');
 
 export default function Browser() {
   const [form] = Form.useForm();
   const [modal, setModal] = useState<any>(null);
 
-  const getKey = (name: string) => {
-    let index = 1;
-    while (localStorage.getItem(`${name}-${index}`)) index++;
-    return `${name}-${index}`;
+  const [list, setList] = useState<any[]>([]);
+  const [filter, setFilter] = useState<any>({ });
+  const updateTable = (params: any = { }) => {
+    const newFilter = { ...filter, ...params };
+    setList(db.queryItem());
   };
 
-  const addItem = (name: string, item: any) => {
-    const key = getKey(name);
-    localStorage.setItem(key, JSON.stringify({ ...item, key }));
+  const handleRemove = (item: any) => {
+    Modal.confirm({
+      width: 600,
+      title: '删除确认',
+      content: <div>
+        <h4>确认删除此浏览器吗？</h4>
+        <div>此操作并不会删除你的用户数据或浏览器内核，如需删除请在文件系统内手动操作。</div>
+      </div>,
+      onOk: () => {
+        db.removeItem(item);
+        updateTable();
+      },
+    });
   };
 
-  const removeItem = (item: Item) => {
-    localStorage.removeItem(item.__key);
-  };
-
-  const updateItem = (item: Item) => {
-    localStorage.setItem(item.__key, JSON.stringify(item));
-  };
-
-  const queryItem = (name: string, filter = (item: Item) => true) => {
-    const keys = Object.keys(localStorage).filter((key) => key.startsWith(`${name}-`));
-    return keys.map((key) => JSON.parse(localStorage.getItem(key) as string))
-      .filter((item) => filter(item));
-  };
+  useEffect(() => {
+    updateTable();
+  }, []);
 
   return <div>
     {/* <Row>
@@ -67,7 +65,7 @@ export default function Browser() {
           <Form.Item>
             <Space>
               <Button>重置</Button>
-              <Button type="primary">搜索</Button>
+              <Button type="primary" onClick={() => updateTable()}>搜索</Button>
             </Space>
           </Form.Item>
         </Form>
@@ -88,12 +86,17 @@ export default function Browser() {
           columns={[
             {
               title: '序号',
+              dataIndex: '__key',
               width: 70,
               fixed: 'left',
               sorter: true,
+              render: (__key: string) => {
+                return __key.split('-')[2];
+              },
             },
             {
               title: '名称',
+              dataIndex: 'name',
               fixed: 'left',
               width: 300,
             },
@@ -121,22 +124,40 @@ export default function Browser() {
               fixed: 'right',
               render: (row) => {
                 return <Space>
-                  <Button size="small" type="primary">打开</Button>
+                  <Button size="small" type="primary" onClick={() => {
+                    post('/openBrowser', {
+                      userDataDir: row.userDataDir,
+                    });
+                  }}>打开</Button>
+                  <Dropdown menu={{ items: [
+                    { key: '1', label: '编辑', onClick: () => {
+                      form.setFieldsValue(row);
+                      setModal(row);
+                    } },
+                    { key: '2', label: '复制' },
+                    { key: '3', label: '删除', danger: true, onClick: () => handleRemove(row) },
+                  ] }}>
+                    <MoreOutlined className="more_actions" />
+                  </Dropdown>
                 </Space>;
               },
             },
           ]}
-          dataSource={[{ }, { }, { }]}
+          dataSource={list}
         />
       </Col>
     </Row>
     <Modal
       open={modal}
-      title={modal?.id ? '编辑浏览器' : '新增浏览器'}
+      title={modal?.__key ? '编辑浏览器' : '新增浏览器'}
       onOk={async () => {
         try {
-          const res: any = await form.validateFields();
-          console.log(res);
+          const data = { ...modal, ...(await form.validateFields()) };
+          if (modal.__key) db.updateItem(data);
+          else db.addItem(data);
+          updateTable();
+          setModal(null);
+          form.resetFields();
         } catch (error) {
           console.error(error);
         }

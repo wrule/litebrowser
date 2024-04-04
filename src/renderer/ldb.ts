@@ -14,15 +14,15 @@ class LDB<T> {
   public addItem(item: T) {
     const key = this.getKey();
     localStorage.setItem(key, JSON.stringify({ ...item, __key: key }));
-    item.__key = key;
+    (item as any).__key = key;
   }
 
   public removeItem(item: T) {
-    localStorage.removeItem(item.__key);
+    localStorage.removeItem((item as any).__key);
   };
 
   public updateItem(item: T) {
-    localStorage.setItem(item.__key, JSON.stringify(item));
+    localStorage.setItem((item as any).__key, JSON.stringify(item));
   };
 
   public queryItem(filter = (item: T) => true): T[] {

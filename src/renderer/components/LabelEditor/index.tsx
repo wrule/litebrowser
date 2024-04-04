@@ -6,7 +6,6 @@ export default
 function LabelEditor(props: any) {
   return <Select
     className={style.com}
-    style={{ width: 300 }}
     mode="tags"
     tagRender={(props) => <Tag color="red" closable>{props.label}</Tag>}>
   </Select>

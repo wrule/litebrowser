@@ -6,6 +6,13 @@ const { Header, Content } = Layout;
 
 export default function Browser() {
   return <div>
+    <Row>
+      <Button onClick={() => {
+        post('/openBrowser', {
+          userDataDir: '/Users/jimao/github/litebrowser/0',
+        });
+      }}>点我</Button>
+    </Row>
     <Row className="controller">
     <Form
           layout="inline">
